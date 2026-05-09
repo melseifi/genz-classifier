@@ -40,3 +40,30 @@ def compute_customer_embedding(
     avg_embeddings= total_embeddings / total_purchases
 
     return avg_embeddings
+
+
+def compute_purchase_frequencies(purchase_records: list[Dict[str, str]]) -> Dict[str, int]:
+    """
+        Function calculates the frequency of purchase for each ASIN for a given customerId.
+
+        Args:
+            purchase_records: list of purchase records [
+                                {"asin": "B001", "date": "2024-01-15"},
+                                {"asin": "B001", "date": "2024-02-03"},
+                            ]
+
+        Returns:
+            customer_purchase_frequency: dictionary with key = ASIN, value = purchase frequency
+
+        Raises:
+            ValueError: if purchase_records is empty
+        """
+    if not purchase_records:
+        raise ValueError("purchase_records cannot be empty")
+
+    frequency = {}
+    for record in purchase_records:
+        asin = record["asin"]
+        frequency[asin] = frequency.get(asin, 0)+1
+
+    return frequency
