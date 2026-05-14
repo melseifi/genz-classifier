@@ -24,6 +24,14 @@ def test_missing_asin_embedding():
     customer_embedding = compute_customer_embedding(asin_embeddings, frequency)
     np.testing.assert_array_almost_equal(customer_embedding, [1.0, 0.0, 0.0])
 
+def test_different_len_asin_embedding():
+    asin_embeddings = {"A001": np.array([1.0, 0.0, 0.0]), "A002": np.array([0.0, 1.0])}
+    frequency = {"A001":2, "A002":2}
+
+    with pytest.raises(ValueError):
+        compute_customer_embedding(asin_embeddings, frequency)
+
+
 def test_asin_frequency():
     purchases = [{"asin": "B001", "date": "2024-01-15"},
                 {"asin": "B001", "date": "2024-02-03"},

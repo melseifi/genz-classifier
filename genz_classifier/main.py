@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,  HTTPException
 from pydantic import BaseModel
 import numpy as np
 from typing import Dict, List
@@ -16,14 +16,18 @@ class EmbedResponse(BaseModel):
 
 @app.post("/embed", response_model=EmbedResponse)
 def get_embedding(request: EmbedRequest):
-    asin_embeddings = {
-        asin: np.array(vector)
-        for asin, vector in request.asin_embeddings.items()
-    }
+    try:
+        asin_embeddings = {
+            asin: np.array(vector)
+            for asin, vector in request.asin_embeddings.items()
+        }
 
-    embedding = compute_customer_embedding_from_records(
-        request.purchase_records,
-        asin_embeddings
-    )
+        embedding = compute_customer_embedding_from_records(
+            request.purchase_records,
+            asin_embeddings
+        )
 
-    return EmbedResponse(embedding=embedding.tolist())
+        return EmbedResponse(embedding=embedding.tolist())
+
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))

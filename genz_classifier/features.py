@@ -31,6 +31,9 @@ def compute_customer_embedding(
 
     for asin, frequency in customer_purchase_frequency.items():
         if asin in asin_embeddings:
+            if len(asin_embeddings[asin]) != embed_len:
+                raise ValueError("asin embeddings do not have the same length")
+
             total_purchases += frequency
             total_embeddings+=asin_embeddings[asin]*frequency
 
